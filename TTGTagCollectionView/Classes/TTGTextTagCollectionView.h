@@ -6,6 +6,8 @@
 #import <UIKit/UIKit.h>
 #import "TTGTagCollectionView.h"
 
+
+
 /// TTGTextTagConfig
 
 @interface TTGTextTagConfig : NSObject;
@@ -58,6 +60,16 @@
 
 // Extra data. You can use this to bind any object you want to each tag.
 @property (nonatomic, strong) NSObject *extraData;
+@end
+
+@interface GradientLabel: UILabel
+@end
+
+// UILabel wrapper for round corner and shadow at the same time.
+@interface TTGTextTagLabel : UIView
+@property (nonatomic, strong) TTGTextTagConfig *config;
+@property (nonatomic, strong) GradientLabel *label;
+@property (assign, nonatomic) BOOL selected;
 @end
 
 /// TTGTextTagCollectionView
@@ -140,6 +152,8 @@
 @property (nonatomic, assign) BOOL showsHorizontalScrollIndicator;
 @property (nonatomic, assign) BOOL showsVerticalScrollIndicator;
 
+@property (strong, nonatomic) NSMutableArray <TTGTextTagLabel *> *tagLabels;
+
 // Reload
 - (void)reload;
 
@@ -194,6 +208,8 @@
 - (NSArray <NSString *> *)allSelectedTags;
 
 - (NSArray <NSString *> *)allNotSelectedTags;
+
+
 
 /**
  * Returns the index of the tag located at the specified point.

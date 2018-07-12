@@ -12,10 +12,10 @@
     self = [super init];
     if (self) {
         _tagTextFont = [UIFont systemFontOfSize:16.0f];
-        
+
         _tagTextColor = [UIColor whiteColor];
         _tagSelectedTextColor = [UIColor whiteColor];
-        
+
         _tagBackgroundColor = [UIColor colorWithRed:0.30 green:0.72 blue:0.53 alpha:1.00];
         _tagSelectedBackgroundColor = [UIColor colorWithRed:0.22 green:0.29 blue:0.36 alpha:1.00];
 
@@ -36,19 +36,19 @@
 
         _tagBorderWidth = 1.0f;
         _tagSelectedBorderWidth = 1.0f;
-        
+
         _tagBorderColor = [UIColor whiteColor];
         _tagSelectedBorderColor = [UIColor whiteColor];
-        
+
         _tagShadowColor = [UIColor blackColor];
         _tagShadowOffset = CGSizeMake(2, 2);
         _tagShadowRadius = 2;
         _tagShadowOpacity = 0.3f;
-        
+
         _tagExtraSpace = CGSizeMake(14, 14);
         _tagMaxWidth = 0.0f;
         _tagMinWidth = 0.0f;
-        
+
         _extraData = nil;
     }
     return self;
@@ -57,10 +57,10 @@
 - (instancetype)copyWithZone:(NSZone *)zone {
     TTGTextTagConfig *newConfig = [TTGTextTagConfig new];
     newConfig.tagTextFont = [_tagTextFont copyWithZone:zone];
-    
+
     newConfig.tagTextColor = [_tagTextColor copyWithZone:zone];
     newConfig.tagSelectedTextColor = [_tagSelectedTextColor copyWithZone:zone];
-    
+
     newConfig.tagBackgroundColor = [_tagBackgroundColor copyWithZone:zone];
     newConfig.tagSelectedBackgroundColor = [_tagSelectedBackgroundColor copyWithZone:zone];
 
@@ -71,36 +71,36 @@
     newConfig.tagSelectedGradientBackgroundEndColor = [_tagSelectedGradientBackgroundEndColor copyWithZone:zone];
     newConfig.tagGradientStartPoint = _tagGradientStartPoint;
     newConfig.tagGradientEndPoint = _tagGradientEndPoint;
-    
+
     newConfig.tagCornerRadius = _tagCornerRadius;
     newConfig.tagSelectedCornerRadius = _tagSelectedCornerRadius;
     newConfig.roundTopLeft = _roundTopLeft;
     newConfig.roundTopRight = _roundTopRight;
     newConfig.roundBottomLeft = _roundBottomLeft;
     newConfig.roundBottomRight = _roundBottomRight;
-    
+
     newConfig.tagBorderWidth = _tagBorderWidth;
     newConfig.tagSelectedBorderWidth = _tagSelectedBorderWidth;
-    
+
     newConfig.tagBorderColor = [_tagBorderColor copyWithZone:zone];
     newConfig.tagSelectedBorderColor = [_tagSelectedBorderColor copyWithZone:zone];
-    
+
     newConfig.tagShadowColor = [_tagShadowColor copyWithZone:zone];
     newConfig.tagShadowOffset = _tagShadowOffset;
     newConfig.tagShadowRadius = _tagShadowRadius;
     newConfig.tagShadowOpacity = _tagShadowOpacity;
-    
+
     newConfig.tagExtraSpace = _tagExtraSpace;
     newConfig.tagMaxWidth = _tagMaxWidth;
     newConfig.tagMinWidth = _tagMinWidth;
-    
+
     if ([_extraData conformsToProtocol:@protocol(NSCopying)] &&
         [_extraData respondsToSelector:@selector(copyWithZone:)]) {
         newConfig.extraData = [((id <NSCopying>)_extraData) copyWithZone:zone];
     } else {
         newConfig.extraData = _extraData;
     }
-    
+
     return newConfig;
 }
 
@@ -110,20 +110,12 @@
 
 #pragma mark - GradientLabel
 
-@interface GradientLabel: UILabel
-@end
+
 
 @implementation GradientLabel
 + (Class)layerClass {
     return [CAGradientLayer class];
 }
-@end
-
-// UILabel wrapper for round corner and shadow at the same time.
-@interface TTGTextTagLabel : UIView
-@property (nonatomic, strong) TTGTextTagConfig *config;
-@property (nonatomic, strong) GradientLabel *label;
-@property (assign, nonatomic) BOOL selected;
 @end
 
 @implementation TTGTextTagLabel
@@ -167,7 +159,7 @@
 
 - (CGSize)configLimitedSize:(CGSize)size {
     if (self.config.tagMaxWidth <= 0.0 && self.config.tagMinWidth <= 0.0) { return size; }
-    
+
     CGSize finalSize = size;
     if (self.config.tagMaxWidth > 0 && size.width > self.config.tagMaxWidth) {
         finalSize.width = self.config.tagMaxWidth;
@@ -175,7 +167,7 @@
     if (self.config.tagMinWidth > 0 && size.width < self.config.tagMinWidth) {
         finalSize.width = self.config.tagMinWidth;
     }
-    
+
     return finalSize;
 }
 
@@ -184,7 +176,6 @@
 #pragma mark - -----TTGTextTagCollectionView-----
 
 @interface TTGTextTagCollectionView () <TTGTagCollectionViewDataSource, TTGTagCollectionViewDelegate>
-@property (strong, nonatomic) NSMutableArray <TTGTextTagLabel *> *tagLabels;
 @property (strong, nonatomic) TTGTagCollectionView *tagCollectionView;
 @end
 
@@ -293,11 +284,11 @@
     if (![tags isKindOfClass:[NSArray class]] || index > _tagLabels.count || ![config isKindOfClass:[TTGTextTagConfig class]]) {
         return;
     }
-    
+
     if (copyConfig) {
         config = [config copy];
     }
-    
+
     NSMutableArray *newTagLabels = [NSMutableArray new];
     for (NSString *tagText in tags) {
         TTGTextTagLabel *label = [self newLabelForTagText:[tagText description] withConfig:config];
@@ -349,7 +340,7 @@
     if (index >= _tagLabels.count || ![config isKindOfClass:[TTGTextTagConfig class]]) {
         return;
     }
-    
+
     _tagLabels[index].config = [config copy];
     [self reload];
 }
@@ -358,7 +349,7 @@
     if (NSMaxRange(range) > _tagLabels.count || ![config isKindOfClass:[TTGTextTagConfig class]]) {
         return;
     }
-    
+
     NSArray *tagLabels = [_tagLabels subarrayWithRange:range];
     config = [config copy];
     for (TTGTextTagLabel *label in tagLabels) {
@@ -463,7 +454,7 @@
 - (BOOL)tagCollectionView:(TTGTagCollectionView *)tagCollectionView shouldSelectTag:(UIView *)tagView atIndex:(NSUInteger)index {
     if (_enableTagSelection) {
         TTGTextTagLabel *label = _tagLabels[index];
-        
+
         if ([self.delegate respondsToSelector:@selector(textTagCollectionView:canTapTag:atIndex:currentSelected:)]) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
@@ -482,26 +473,26 @@
 - (void)tagCollectionView:(TTGTagCollectionView *)tagCollectionView didSelectTag:(UIView *)tagView atIndex:(NSUInteger)index {
     if (_enableTagSelection) {
         TTGTextTagLabel *label = _tagLabels[index];
-        
+
         if (!label.selected && _selectionLimit > 0 && [self allSelectedTags].count + 1 > _selectionLimit) {
             return;
         }
-        
+
         label.selected = !label.selected;
-        
+
         if (self.alignment == TTGTagCollectionAlignmentFillByExpandingWidth) {
             [self reload];
         } else {
             [self updateStyleAndFrameForLabel:label];
         }
-        
+
         if ([_delegate respondsToSelector:@selector(textTagCollectionView:didTapTag:atIndex:selected:)]) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
             [_delegate textTagCollectionView:self didTapTag:label.label.text atIndex:index selected:label.selected];
 #pragma clang diagnostic pop
         }
-        
+
         if ([_delegate respondsToSelector:@selector(textTagCollectionView:didTapTag:atIndex:selected:tagConfig:)]) {
             [_delegate textTagCollectionView:self didTapTag:label.label.text atIndex:index selected:label.selected tagConfig:label.config];
         }
@@ -659,12 +650,10 @@
         }
     }
 
-    CGFloat currentCornerRadius = label.selected ? config.tagSelectedCornerRadius : config.tagCornerRadius;
-
     UIBezierPath *maskPath = [UIBezierPath
                               bezierPathWithRoundedRect:label.bounds
                               byRoundingCorners: corners
-                              cornerRadii:CGSizeMake(currentCornerRadius, currentCornerRadius)
+                              cornerRadii:CGSizeMake(config.tagCornerRadius, config.tagCornerRadius)
                               ];
 
     CAShapeLayer *maskLayer = [CAShapeLayer layer];
@@ -691,6 +680,7 @@
         ((CAGradientLayer *)label.label.layer).endPoint = config.tagGradientEndPoint;
     }
 
+    //    label.label.layer.cornerRadius = label.selected ? config.tagSelectedCornerRadius : config.tagCornerRadius;
     label.label.layer.borderWidth = label.selected ? config.tagSelectedBorderWidth : config.tagBorderWidth;
     label.label.layer.borderColor = (label.selected && config.tagSelectedBorderColor) ? config.tagSelectedBorderColor.CGColor : config.tagBorderColor.CGColor;
     label.label.layer.masksToBounds = YES;
@@ -716,6 +706,7 @@
 
     label.frame = (CGRect){label.frame.origin, size};
 }
+
 
 - (TTGTextTagLabel *)newLabelForTagText:(NSString *)tagText withConfig:(TTGTextTagConfig *)config {
     TTGTextTagLabel *label = [TTGTextTagLabel new];
